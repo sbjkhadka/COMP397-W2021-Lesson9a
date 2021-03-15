@@ -15,14 +15,22 @@ public class ControlPanelController : MonoBehaviour
     public float timer = 0.0f;
     public bool isOnScreen = false;
 
+    [Header("Player Settings")]
+    public PlayerBehaviour player;
     public CameraController playerCamera;
 
     public Pauseable pausable;
+
+    [Header("Scene Data")]
+    public ScenedataSO sceneData;
+
+    public GameObject gameStateElement;
 
     // Start is called before the first frame update
     void Start()
     {
         pausable = FindObjectOfType<Pauseable>();
+        player = FindObjectOfType<PlayerBehaviour>();
         playerCamera = FindObjectOfType<CameraController>();
         rectTransform = GetComponent<RectTransform>();
         rectTransform.anchoredPosition = offScreenPosition;
@@ -45,6 +53,8 @@ public class ControlPanelController : MonoBehaviour
         {
             MoveControlPanelUp();
         }
+
+        gameStateElement.SetActive(pausable.isGamePaused);
     }
 
     void ToggleControlPanel()
@@ -92,4 +102,18 @@ public class ControlPanelController : MonoBehaviour
     {
         ToggleControlPanel();
     }
+    public void onLoadButtonPressed() {
+        player.controller.enabled = false;
+        player.transform.position = sceneData.playerPosition;
+        player.controller.enabled = true;
+
+        player.health = sceneData.playerHealth;
+        player.healthBar.setHealth(sceneData.playerHealth);
+        
+    }
+    public void onSaveButtonPressed() {
+        sceneData.playerPosition = player.transform.position;
+        sceneData.playerHealth = player.health;
+    }
 }
+
